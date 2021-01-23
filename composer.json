@@ -1,0 +1,15 @@
+{
+  "name": "alexandr/task-force",
+  "authors": [
+    {
+      "name": "ualexander",
+      "email": "aleanches@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "TaskForce\\": "src/"
+    }
+  }
+}

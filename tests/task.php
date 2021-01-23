@@ -1,8 +1,10 @@
 <?php
 
-require_once '../src/Task.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
-$task = new \taskForce\Task(1, 1);
+use TaskForce\app\Task;
+
+$task = new Task(1, 1);
 
 assert($task->getNextStatus('action_cancel') === 'status_cancel', 'action_cancel');
 assert($task->getNextStatus('action_respond') === 'status_process', 'action_respond');

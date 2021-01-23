@@ -1,6 +1,6 @@
 <?php
 
-namespace taskForce;
+namespace TaskForce\app;
 
 class Task
 {
