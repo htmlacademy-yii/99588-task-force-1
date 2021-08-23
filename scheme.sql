@@ -2,22 +2,22 @@ CREATE DATABASE taskforce CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE taskforce;
 
-CREATE TABLE users (
+CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email CHAR(64),
     name CHAR(64),
     password CHAR(256),
-    dt_add DATETIME,
+    created_at DATETIME,
+    updated_at DATETIME,
     rate TINYINT,
-    tasks_done INT,
-    tasks_failed INT,
     city_id INT,
     profiles_id INT
 );
 
-CREATE TABLE tasks (
+CREATE TABLE task (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    dt_add DATETIME,
+    created_at DATETIME,
+    updated_at DATETIME,
     category_id INT,
     description CHAR(256),
     expire DATE,
@@ -32,9 +32,9 @@ CREATE TABLE tasks (
     city_id INT
 );
 
-CREATE TABLE replies (
+CREATE TABLE response (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    dt_add DATETIME,
+    created_at DATETIME,
     rate TINYINT,
     description CHAR(256),
     budget INT,
@@ -42,7 +42,7 @@ CREATE TABLE replies (
     task_id INT
 );
 
-CREATE TABLE profiles (
+CREATE TABLE profile (
     id INT AUTO_INCREMENT PRIMARY KEY,
     address CHAR(128),
     bd DATE,
@@ -51,48 +51,48 @@ CREATE TABLE profiles (
     skype CHAR(64)
 );
 
-CREATE TABLE opinions (
+CREATE TABLE feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    dt_add DATETIME,
+    created_at DATETIME,
     rate TINYINT,
     description CHAR(256),
     user_id INT,
     task_id INT
 );
 
-CREATE TABLE cities (
+CREATE TABLE city (
     id INT AUTO_INCREMENT PRIMARY KEY,
     city CHAR(64),
     lat DOUBLE,
     long DOUBLE
 );
 
-CREATE TABLE categories (
+CREATE TABLE category (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name CHAR(64),
     icon CHAR(64)
 );
 
-CREATE TABLE files (
+CREATE TABLE file (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name CHAR(128),
     user_id INT,
     task_id INT
 );
 
-CREATE TABLE available_notification_types (
+CREATE TABLE available_notification_type (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     notification_type CHAR(64)
 );
 
-CREATE TABLE notifications (
+CREATE TABLE notification (
     id INT AUTO_INCREMENT PRIMARY KEY,
     text CHAR(256),
     notification_type CHAR(64)
 );
 
-CREATE TABLE dialogs (
+CREATE TABLE massage (
     id INT AUTO_INCREMENT PRIMARY KEY,
     text CHAR(256),
     sender_id INT,
