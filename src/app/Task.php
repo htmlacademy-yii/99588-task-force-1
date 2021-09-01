@@ -77,7 +77,7 @@ class Task
     }
 
     public function getNextStatus(Action $action) {
-        switch ($action) {
+        switch (true) {
             case $action instanceof ActionRespond:
                 return $this->statusProcess;
             case $action instanceof ActionRefuse:
