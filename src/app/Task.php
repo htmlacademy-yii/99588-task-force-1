@@ -2,6 +2,7 @@
 
 namespace TaskForce\app;
 
+use TaskForce\app\action\Action;
 use TaskForce\app\action\ActionCancel;
 use TaskForce\app\action\ActionDone;
 use TaskForce\app\action\ActionRefuse;
@@ -75,15 +76,15 @@ class Task
         ];
     }
 
-    public function getNextStatus($actionKey) {
-        switch ($actionKey) {
-            case $this->actionRespond->getKey():
+    public function getNextStatus(Action $action) {
+        switch ($action) {
+            case $action instanceof ActionRespond:
                 return $this->statusProcess;
-            case $this->actionRefuse->getKey():
+            case $action instanceof ActionRefuse:
                 return $this->statusFailed;
-            case $this->actionDone->getKey():
+            case $action instanceof ActionDone:
                 return $this->statusDone;
-            case $this->actionCancel->getKey():
+            case $action instanceof ActionCancel:
                 return $this->statusCancel;
             default:
                 return NULL;

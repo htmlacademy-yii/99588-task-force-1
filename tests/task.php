@@ -27,10 +27,10 @@ $statusProcess = new StatusProcess();
 $statusDone = new StatusDone();
 $statusFailed = new StatusFailed();
 
-var_dump(assert($taskEmployer->getNextStatus($actionCancel->getKey()) instanceof StatusCancel));
-var_dump(assert($taskEmployer->getNextStatus($actionRespond->getKey()) instanceof StatusProcess));
-var_dump(assert($taskEmployer->getNextStatus($actionDone->getKey()) instanceof StatusDone));
-var_dump(assert($taskEmployer->getNextStatus($actionRefuse->getKey()) instanceof StatusFailed));
+var_dump(assert($taskEmployer->getNextStatus($actionCancel) instanceof StatusCancel));
+var_dump(assert($taskEmployer->getNextStatus($actionRespond) instanceof StatusProcess));
+var_dump(assert($taskEmployer->getNextStatus($actionDone) instanceof StatusDone));
+var_dump(assert($taskEmployer->getNextStatus($actionRefuse) instanceof StatusFailed));
 
 var_dump(assert($taskEmployer->getAvailableAction() instanceof ActionCancel));
 var_dump(assert($taskExecutor->getAvailableAction() instanceof ActionRespond));
