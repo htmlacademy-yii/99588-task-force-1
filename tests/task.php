@@ -3,53 +3,58 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
 use TaskForce\app\Task;
-use TaskForce\app\action\CancelTaskAction;
-use TaskForce\app\action\DoneTaskAction;
-use TaskForce\app\action\RefuseTaskAction;
-use TaskForce\app\action\RespondTaskAction;
+use TaskForce\app\status\StatusCancel;
+use TaskForce\app\status\StatusDone;
+use TaskForce\app\status\StatusFailed;
+use TaskForce\app\status\StatusNew;
+use TaskForce\app\status\StatusProcess;
+use TaskForce\app\action\ActionCancel;
+use TaskForce\app\action\ActionDone;
+use TaskForce\app\action\ActionRefuse;
+use TaskForce\app\action\ActionRespond;
 
 $taskEmployer = new Task(1, 1, 2);
 $taskExecutor = new Task(2, 1, 2);
 
-const ACTION_RESPOND = "action_respond";
-const ACTION_REFUSE = "action_refuse";
-const ACTION_DONE = "action_done";
-const ACTION_CANCEL = "action_cancel";
+$actionRespond = new ActionRespond($taskEmployer);
+$actionRefuse = new ActionRefuse($taskEmployer);
+$actionDone = new ActionDone($taskEmployer);
+$actionCancel = new ActionCancel($taskEmployer);
 
-const STATUS_NEW = "status_new";
-const STATUS_CANCEL = "status_cancel";
-const STATUS_PROCESS = "status_process";
-const STATUS_DONE = "status_done";
-const STATUS_FAILED = "status_failed";
+$statusNew = new StatusNew();
+$statusCancel = new StatusCancel();
+$statusProcess = new StatusProcess();
+$statusDone = new StatusDone();
+$statusFailed = new StatusFailed();
 
-var_dump(assert($taskEmployer->getNextStatus(ACTION_CANCEL) === STATUS_CANCEL, ACTION_CANCEL));
-var_dump(assert($taskEmployer->getNextStatus(ACTION_RESPOND) === STATUS_PROCESS, ACTION_RESPOND));
-var_dump(assert($taskEmployer->getNextStatus(ACTION_DONE) === STATUS_DONE, ACTION_DONE));
-var_dump(assert($taskEmployer->getNextStatus(ACTION_REFUSE) === STATUS_FAILED, ACTION_REFUSE));
+var_dump(assert($taskEmployer->getNextStatus($actionCancel->getKey()) instanceof StatusCancel));
+var_dump(assert($taskEmployer->getNextStatus($actionRespond->getKey()) instanceof StatusProcess));
+var_dump(assert($taskEmployer->getNextStatus($actionDone->getKey()) instanceof StatusDone));
+var_dump(assert($taskEmployer->getNextStatus($actionRefuse->getKey()) instanceof StatusFailed));
 
-var_dump(assert($taskEmployer->getAvailableAction() instanceof CancelTaskAction));
-var_dump(assert($taskExecutor->getAvailableAction() instanceof RespondTaskAction));
+var_dump(assert($taskEmployer->getAvailableAction() instanceof ActionCancel));
+var_dump(assert($taskExecutor->getAvailableAction() instanceof ActionRespond));
 
-$taskEmployer->testSetStatus(STATUS_PROCESS);
-$taskExecutor->testSetStatus(STATUS_PROCESS);
+$taskEmployer->testSetStatus($statusProcess);
+$taskExecutor->testSetStatus($statusProcess);
 
-var_dump(assert($taskEmployer->getAvailableAction() instanceof DoneTaskAction));
-var_dump(assert($taskExecutor->getAvailableAction() instanceof RefuseTaskAction));
+var_dump(assert($taskEmployer->getAvailableAction() instanceof ActionDone));
+var_dump(assert($taskExecutor->getAvailableAction() instanceof ActionRefuse));
 
-$taskEmployer->testSetStatus(STATUS_DONE);
-$taskExecutor->testSetStatus(STATUS_DONE);
-
-var_dump(assert($taskEmployer->getAvailableAction() === NULL));
-var_dump(assert($taskExecutor->getAvailableAction() === NULL));
-
-$taskEmployer->testSetStatus(STATUS_CANCEL);
-$taskExecutor->testSetStatus(STATUS_CANCEL);
+$taskEmployer->testSetStatus($statusCancel);
+$taskExecutor->testSetStatus($statusCancel);
 
 var_dump(assert($taskEmployer->getAvailableAction() === NULL));
 var_dump(assert($taskExecutor->getAvailableAction() === NULL));
 
-$taskEmployer->testSetStatus(STATUS_FAILED);
-$taskExecutor->testSetStatus(STATUS_FAILED);
+$taskEmployer->testSetStatus($statusDone);
+$taskExecutor->testSetStatus($statusDone);
+
+var_dump(assert($taskEmployer->getAvailableAction() === NULL));
+var_dump(assert($taskExecutor->getAvailableAction() === NULL));
+
+$taskEmployer->testSetStatus($statusFailed);
+$taskExecutor->testSetStatus($statusFailed);
 
 var_dump(assert($taskEmployer->getAvailableAction() === NULL));
 var_dump(assert($taskExecutor->getAvailableAction() === NULL));

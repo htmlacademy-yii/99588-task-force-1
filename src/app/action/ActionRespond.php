@@ -2,16 +2,16 @@
 
 namespace TaskForce\app\action;
 
-class RefuseTaskAction extends TaskAction
+class ActionRespond extends Action
 {
-    const NAME = "отказаться";
-    const NAME_INTERNAL = "action_refuse";
+    const NAME = "откликнуться";
+    const KEY = "action_respond";
 
     public function getName():string {
         return self::NAME;
     }
-    public function getNameInternal():string {
-        return self::NAME_INTERNAL;
+    public function getKey():string {
+        return self::KEY;
     }
     public function checkAccess():bool {
         return $this->task->getUserId() === $this->task->getExecutorId();
