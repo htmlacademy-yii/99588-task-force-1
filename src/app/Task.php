@@ -2,100 +2,128 @@
 
 namespace TaskForce\app;
 
+use TaskForce\app\action\Action;
+use TaskForce\app\action\ActionCancel;
+use TaskForce\app\action\ActionDone;
+use TaskForce\app\action\ActionRefuse;
+use TaskForce\app\action\ActionRespond;
+use TaskForce\app\status\StatusCancel;
+use TaskForce\app\status\StatusDone;
+use TaskForce\app\status\StatusFailed;
+use TaskForce\app\status\StatusNew;
+use TaskForce\app\status\StatusProcess;
+
 class Task
 {
     private $errors = [];
-    private $currentStatus = NULL;
+    private $userId = NULL;
     private $employerId = NULL;
     private $executorId = NULL;
+    private $currentStatus = NULL;
 
-    const USER_ROLE_EMPLOYER = 'employer';
-    const USER_ROLE_EXECUTOR = 'executor';
+    private $actionRespond = NULL;
+    private $actionRefuse = NULL;
+    private $actionDone = NULL;
+    private $actionCancel = NULL;
 
-    const STATUS_NEW = 'status_new';
-    const STATUS_CANCEL = 'status_cancel';
-    const STATUS_PROCESS = 'status_process';
-    const STATUS_DONE = 'status_done';
-    const STATUS_FAILED = 'status_failed';
+    private $statusNew = NULL;
+    private $statusCancel = NULL;
+    private $statusProcess = NULL;
+    private $statusDone = NULL;
+    private $statusFailed = NULL;
 
-    const ACTION_CANCEL = 'action_cancel';
-    const ACTION_RESPOND = 'action_respond';
-    const ACTION_DONE = 'action_done';
-    const ACTION_FAILED = 'action_failed';
-
-
-    public function __construct(int $executorId, int $employerId) {
-        $this->executorId = $executorId;
+    public function __construct(int $userId, int $employerId, int $executorId) {
+        $this->userId = $userId;
         $this->employerId = $employerId;
+        $this->executorId = $executorId;
+
+        $this->initActions();
+        $this->initStatuses();
+        $this->currentStatus = $this->statusNew;
     }
 
-    private $statusesMap = [
-        'statuses' => [
-            self::STATUS_NEW => 'новое',
-            self::STATUS_CANCEL => 'отменено',
-            self::STATUS_PROCESS => 'в работе',
-            self::STATUS_DONE => 'выполнено',
-            self::STATUS_FAILED => 'провалено'
-        ],
-        'actions' => [
-            self::ACTION_CANCEL => 'отменить',
-            self::ACTION_RESPOND => 'откликнуться',
-            self::ACTION_DONE => 'выполнено',
-            self::ACTION_FAILED => 'отказаться'
-        ]
-    ];
+    private function initActions() {
+        $this->actionRespond = new ActionRespond($this);
+        $this->actionRefuse = new ActionRefuse($this);
+        $this->actionDone = new ActionDone($this);
+        $this->actionCancel = new ActionCancel($this);
+    }
 
-    private $nextStatus = [
-        self::ACTION_CANCEL => self::STATUS_CANCEL,
-        self::ACTION_DONE => self::STATUS_DONE,
-        self::ACTION_RESPOND => self::STATUS_PROCESS,
-        self::ACTION_FAILED => self::STATUS_FAILED
-    ];
+    private function initStatuses() {
+        $this->statusNew = new StatusNew();
+        $this->statusCancel = new StatusCancel();
+        $this->statusProcess = new StatusProcess();
+        $this->statusDone = new StatusDone();
+        $this->statusFailed = new StatusFailed();
+    }
 
-    private $availableActions = [
-        self::USER_ROLE_EMPLOYER => [
-            self::STATUS_NEW => [self::ACTION_CANCEL],
-            self::STATUS_PROCESS => [self::ACTION_DONE]
-        ],
-        self::USER_ROLE_EXECUTOR => [
-            self::STATUS_NEW => [self::ACTION_RESPOND],
-            self::STATUS_PROCESS => [self::ACTION_FAILED]
-        ]
-    ];
+    public function getActionsMap() {
+        return [
+            $this->actionRespond->getKey() => $this->actionRespond,
+            $this->actionRefuse->getKey() => $this->actionRefuse,
+            $this->actionDone->getKey() => $this->actionDone,
+            $this->actionCancel->getKey() => $this->actionCancel,
+        ];
+    }
+
+    public function getStatusesMap() {
+        return [
+            $this->statusNew->getKey() => $this->statusNew,
+            $this->statusCancel->getKey() => $this->statusCancel,
+            $this->statusProcess->getKey() => $this->statusProcess,
+            $this->statusDone->getKey() => $this->statusDone,
+            $this->statusFailed->getKey() => $this->statusFailed,
+        ];
+    }
+
+    public function getNextStatus(Action $action) {
+        switch (true) {
+            case $action instanceof ActionRespond:
+                return $this->statusProcess;
+            case $action instanceof ActionRefuse:
+                return $this->statusFailed;
+            case $action instanceof ActionDone:
+                return $this->statusDone;
+            case $action instanceof ActionCancel:
+                return $this->statusCancel;
+            default:
+                return NULL;
+        }
+    }
+
+    public function getAvailableAction() {
+        switch (true) {
+            case $this->currentStatus instanceof StatusNew && $this->actionCancel->checkAccess():
+                return $this->actionCancel;
+            case $this->currentStatus instanceof StatusNew && $this->actionRespond->checkAccess():
+                return $this->actionRespond;
+            case $this->currentStatus instanceof StatusProcess && $this->actionDone->checkAccess():
+                return $this->actionDone;
+            case $this->currentStatus instanceof StatusProcess && $this->actionRefuse->checkAccess():
+                return $this->actionRefuse;
+            default:
+                return NULL;
+        }
+    }
 
     public function getErrors() {
         return $this->errors;
     }
 
-    public function getStatusesMap() {
-        return $this->statusesMap['statuses'];
+    public function getUserId() {
+        return $this->userId;
     }
 
-    public function getActionsMap() {
-        return $this->statusesMap['actions'];
+    public function getEmployerId() {
+        return $this->employerId;
     }
 
-    public function getNextStatus($action) {
-        try {
-            if (!isset($this->statusesMap['actions'][$action]))
-                throw new \Exception("(${action}) action does not exist");
-            return $this->nextStatus[$action] ?? NULL;
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-            return false;
-        }
+    public function getExecutorId() {
+        return $this->executorId;
     }
 
-    public function getAvailableActions($status, $userRole) {
-        try {
-            if (!isset($this->availableActions[$userRole]))
-                throw new \Exception("(${userRole}) user role does not exist");
-            if (!isset($this->statusesMap['statuses'][$status]))
-                throw new \Exception("(${status}) status does not exist");
-            return $this->availableActions[$userRole][$status] ?? [];
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-            return false;
-        }
+    // для проверки getAvailableAction
+    public function testSetStatus($status) {
+        $this->currentStatus = $status;
     }
 }
