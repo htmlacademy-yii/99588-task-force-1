@@ -33,7 +33,7 @@ class Task
     private Status $statusDone;
     private Status $statusFailed;
 
-    public function __construct(string $status, int $userId, int $employerId, ?int $executorId)
+    public function __construct(string $status, int $userId, int $employerId, ?int $executorId = NULL)
     {
         $this->userId = $userId;
         $this->employerId = $employerId;
