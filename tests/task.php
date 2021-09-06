@@ -32,15 +32,6 @@ try {
     $taskEmployerStatusProcess = new Task(STATUS_PROCESS, 1, 1, 2);
     $taskExecutorStatusProcess = new Task(STATUS_PROCESS, 2, 1, 2);
 
-    $taskEmployerStatusCancel = new Task(STATUS_CANCEL, 1, 1, 2);
-    $taskExecutorStatusCancel = new Task(STATUS_CANCEL, 2, 1, 2);
-
-    $taskEmployerStatusDone = new Task(STATUS_DONE, 1, 1, 2);
-    $taskExecutorStatusDone = new Task(STATUS_DONE, 2, 1, 2);
-
-    $taskEmployerStatusFailed = new Task(STATUS_FAILED,1, 1, 2);
-    $taskExecutorStatusFailed = new Task(STATUS_FAILED,2, 1, 2);
-
     var_dump(assert($taskEmployerStatusNew->getNextStatus(ACTION_CANCEL) instanceof StatusCancel));
     var_dump(assert($taskEmployerStatusNew->getNextStatus(ACTION_RESPOND) instanceof StatusProcess));
     var_dump(assert($taskEmployerStatusNew->getNextStatus(ACTION_DONE) instanceof StatusDone));
@@ -51,15 +42,6 @@ try {
 
     var_dump(assert($taskEmployerStatusProcess->getAvailableAction() instanceof ActionDone));
     var_dump(assert($taskExecutorStatusProcess->getAvailableAction() instanceof ActionRefuse));
-
-    var_dump(assert($taskEmployerStatusCancel->getAvailableAction() === NULL));
-    var_dump(assert($taskExecutorStatusCancel->getAvailableAction() === NULL));
-
-    var_dump(assert($taskEmployerStatusDone->getAvailableAction() === NULL));
-    var_dump(assert($taskExecutorStatusDone->getAvailableAction() === NULL));
-
-    var_dump(assert($taskEmployerStatusFailed->getAvailableAction() === NULL));
-    var_dump(assert($taskExecutorStatusFailed->getAvailableAction() === NULL));
 }
 catch (BaseException $e) {
     var_dump($e->getMessage());
