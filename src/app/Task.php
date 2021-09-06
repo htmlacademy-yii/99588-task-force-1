@@ -7,49 +7,57 @@ use TaskForce\app\action\ActionCancel;
 use TaskForce\app\action\ActionDone;
 use TaskForce\app\action\ActionRefuse;
 use TaskForce\app\action\ActionRespond;
+use TaskForce\app\status\Status;
 use TaskForce\app\status\StatusCancel;
 use TaskForce\app\status\StatusDone;
 use TaskForce\app\status\StatusFailed;
 use TaskForce\app\status\StatusNew;
 use TaskForce\app\status\StatusProcess;
+use TaskForce\app\exception\BaseException;
 
 class Task
 {
-    private $errors = [];
-    private $userId = NULL;
-    private $employerId = NULL;
-    private $executorId = NULL;
-    private $currentStatus = NULL;
+    private int $userId;
+    private int $employerId;
+    private ?int $executorId;
+    private Status $currentStatus;
 
-    private $actionRespond = NULL;
-    private $actionRefuse = NULL;
-    private $actionDone = NULL;
-    private $actionCancel = NULL;
+    private Action $actionRespond;
+    private Action $actionRefuse;
+    private Action $actionDone;
+    private Action $actionCancel;
 
-    private $statusNew = NULL;
-    private $statusCancel = NULL;
-    private $statusProcess = NULL;
-    private $statusDone = NULL;
-    private $statusFailed = NULL;
+    private Status $statusNew;
+    private Status $statusCancel;
+    private Status $statusProcess;
+    private Status $statusDone;
+    private Status $statusFailed;
 
-    public function __construct(int $userId, int $employerId, int $executorId) {
+    public function __construct(string $status, int $userId, int $employerId, ?int $executorId = NULL)
+    {
         $this->userId = $userId;
         $this->employerId = $employerId;
         $this->executorId = $executorId;
 
         $this->initActions();
         $this->initStatuses();
-        $this->currentStatus = $this->statusNew;
+
+        if (! isset($this->getStatusesMap()[$status])) {
+            throw new BaseException("invalid status");
+        }
+        $this->currentStatus = $this->getStatusesMap()[$status];
     }
 
-    private function initActions() {
+    private function initActions(): void
+    {
         $this->actionRespond = new ActionRespond($this);
         $this->actionRefuse = new ActionRefuse($this);
         $this->actionDone = new ActionDone($this);
         $this->actionCancel = new ActionCancel($this);
     }
 
-    private function initStatuses() {
+    private function initStatuses(): void
+    {
         $this->statusNew = new StatusNew();
         $this->statusCancel = new StatusCancel();
         $this->statusProcess = new StatusProcess();
@@ -57,7 +65,8 @@ class Task
         $this->statusFailed = new StatusFailed();
     }
 
-    public function getActionsMap() {
+    public function getActionsMap(): array
+    {
         return [
             $this->actionRespond->getKey() => $this->actionRespond,
             $this->actionRefuse->getKey() => $this->actionRefuse,
@@ -66,7 +75,8 @@ class Task
         ];
     }
 
-    public function getStatusesMap() {
+    public function getStatusesMap(): array
+    {
         return [
             $this->statusNew->getKey() => $this->statusNew,
             $this->statusCancel->getKey() => $this->statusCancel,
@@ -76,22 +86,24 @@ class Task
         ];
     }
 
-    public function getNextStatus(Action $action) {
-        switch (true) {
-            case $action instanceof ActionRespond:
+    public function getNextStatus(string $action): Status
+    {
+        switch ($action) {
+            case $this->actionRespond->getKey():
                 return $this->statusProcess;
-            case $action instanceof ActionRefuse:
+            case $this->actionRefuse->getKey():
                 return $this->statusFailed;
-            case $action instanceof ActionDone:
+            case $this->actionDone->getKey():
                 return $this->statusDone;
-            case $action instanceof ActionCancel:
+            case $this->actionCancel->getKey():
                 return $this->statusCancel;
             default:
-                return NULL;
+                throw new BaseException("no status available");
         }
     }
 
-    public function getAvailableAction() {
+    public function getAvailableAction(): Action
+    {
         switch (true) {
             case $this->currentStatus instanceof StatusNew && $this->actionCancel->checkAccess():
                 return $this->actionCancel;
@@ -102,28 +114,27 @@ class Task
             case $this->currentStatus instanceof StatusProcess && $this->actionRefuse->checkAccess():
                 return $this->actionRefuse;
             default:
-                return NULL;
+                throw new BaseException("no action available");
         }
     }
 
-    public function getErrors() {
+    public function getErrors(): array
+    {
         return $this->errors;
     }
 
-    public function getUserId() {
+    public function getUserId(): int
+    {
         return $this->userId;
     }
 
-    public function getEmployerId() {
+    public function getEmployerId(): int
+    {
         return $this->employerId;
     }
 
-    public function getExecutorId() {
+    public function getExecutorId(): int
+    {
         return $this->executorId;
-    }
-
-    // для проверки getAvailableAction
-    public function testSetStatus($status) {
-        $this->currentStatus = $status;
     }
 }
