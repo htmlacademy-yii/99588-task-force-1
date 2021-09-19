@@ -12,6 +12,7 @@ function datetimeToStr(int $rand) :string {
     return date("Y-m-d h:m:s", $rand);
 }
 
+
 function createDataCategories($dir, $fileName) {
     $Parser = new Parser($dir . "/" . $fileName);
     $Parser->setTableName("category");
