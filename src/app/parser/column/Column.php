@@ -4,7 +4,7 @@ namespace TaskForce\app\parser\column;
 
 abstract class Column {
     private string $key;
-    protected $modifyFunction;
+    protected string $modifyFunction;
 
     public function __construct(string $key) {
         $this->key = $key;

@@ -16,7 +16,7 @@ class ColumnString extends Column {
         if (isset($this->maxValueLen)) {
             $this->cutValueLen();
         }
-        return is_callable($this->modifyFunction) ? call_user_func($this->modifyFunction, $this->value) : $this->value;
+        return (isset($this->modifyFunction)) ? call_user_func($this->modifyFunction, $this->value) : $this->value;
     }
 
     public function setValue(string $value) :ColumnString

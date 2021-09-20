@@ -12,7 +12,7 @@ class ColumnIntRand extends Column {
 
     public function getValue() :string {
         $rand = rand($this->minValue, $this->maxValue);
-        return (string) is_callable($this->modifyFunction) ? call_user_func($this->modifyFunction, $rand) : $rand;
+        return (string) isset($this->modifyFunction) ? call_user_func($this->modifyFunction, $rand) : $rand;
     }
     public function setMinValue(int $minValue) :ColumnIntRand {
         $this->minValue = $minValue;
