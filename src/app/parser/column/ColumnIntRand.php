@@ -14,10 +14,12 @@ class ColumnIntRand extends Column {
         $rand = rand($this->minValue, $this->maxValue);
         return (string) is_callable($this->modifyFunction) ? call_user_func($this->modifyFunction, $rand) : $rand;
     }
-    public function setMinValue(int $minValue) :void {
+    public function setMinValue(int $minValue) :ColumnIntRand {
         $this->minValue = $minValue;
+        return $this;
     }
-    public function setMaxValue(int $maxValue) :void {
+    public function setMaxValue(int $maxValue) :ColumnIntRand {
         $this->maxValue = $maxValue;
+        return $this;
     }
 }

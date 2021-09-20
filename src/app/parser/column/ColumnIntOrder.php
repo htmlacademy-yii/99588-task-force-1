@@ -11,7 +11,8 @@ class ColumnIntOrder extends Column {
     public function getValue() :string {
         return $this->value++;
     }
-    public function setStartValue(int $startValue) :void {
+    public function setStartValue(int $startValue) :ColumnIntOrder {
         $this->value = $startValue;
+        return $this;
     }
 }

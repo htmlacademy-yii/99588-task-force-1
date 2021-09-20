@@ -16,26 +16,29 @@ class Parser {
 
     public function __construct(string $srcFileName)
     {
-        if (! file_exists($srcFileName)) {
+        if (! is_readable($srcFileName)) {
             throw new BaseException("File opening error {\"$srcFileName\"}");
         }
         $this->srcFileObject = new SplFileObject($srcFileName);
         $this->srcFileName = $srcFileName;
     }
 
-    public function setDestFileName(string $destFileName) :void
+    public function setDestFileName(string $destFileName) :Parser
     {
         $this->destFileName = $destFileName;
+        return $this;
     }
 
-    public function setTableName(string $tableName) :void
+    public function setTableName(string $tableName) :Parser
     {
         $this->tableName = $tableName;
+        return $this;
     }
 
-    public function pushColumnHandler(Column $handler) :void
+    public function pushColumnHandler(Column $handler) :Parser
     {
         $this->columnHandler[] = $handler;
+        return $this;
     }
 
     private function defaultDestFileName(string $fileName) :string
@@ -50,7 +53,7 @@ class Parser {
         $this->destFileObject->ftruncate(0);
     }
 
-    public function parseFile(?string $fileName = NULL) :void
+    public function parseFile(?string $fileName = NULL) :Parser
     {
         $this->createDestFileObject();
         $header = $this->srcFileObject->fgetcsv();
@@ -61,6 +64,7 @@ class Parser {
                 $this->writeLine($line);
             }
         }
+        return $this;
     }
 
     private function writeLine($line) :void

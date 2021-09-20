@@ -19,17 +19,19 @@ class ColumnString extends Column {
         return is_callable($this->modifyFunction) ? call_user_func($this->modifyFunction, $this->value) : $this->value;
     }
 
-    public function setValue(string $value) :void
+    public function setValue(string $value) :ColumnString
     {
         $this->value = $value;
+        return $this;
     }
 
-    public function setMaxValueLen(int $maxValueLen) :void
+    public function setMaxValueLen(int $maxValueLen) :ColumnString
     {
         $this->maxValueLen = $maxValueLen;
+        return $this;
     }
 
-    private function cutValueLen() :void
+    private function cutValueLen() :ColumnString
     {
         $len = strlen($this->value);
 
@@ -37,5 +39,6 @@ class ColumnString extends Column {
             $cutLen = $this->maxValueLen - $len - strlen($this->valueCutPostfix) - self::DEFAULT_MARGIN;
             $this->value = substr($this->value, 0, $cutLen) . $this->valueCutPostfix;
         }
+        return $this;
     }
 }

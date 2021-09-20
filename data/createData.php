@@ -14,157 +14,127 @@ function datetimeToStr(int $rand) :string {
 
 
 function createDataCategories($dir, $fileName) {
-    $Parser = new Parser($dir . "/" . $fileName);
-    $Parser->setTableName("category");
-
-    $Parser->pushColumnHandler(new ColumnString("name"));
-
-    $Parser->pushColumnHandler(new ColumnString("icon"));
-
-    $Parser->parseFile();
+    $parser = new Parser($dir . "/" . $fileName);
+    $parser->setTableName("category")
+        ->pushColumnHandler(new ColumnString("name"))
+        ->pushColumnHandler(new ColumnString("icon"))
+        ->parseFile();
 }
 
 function createDataCities($dir, $fileName) {
-    $Parser = new Parser($dir . "/" . $fileName);
-    $Parser->setTableName("city");
-
-    $Parser->pushColumnHandler(new ColumnString("city"));
-
-    $Parser->pushColumnHandler(new ColumnString("lat"));
-
-    $Parser->pushColumnHandler(new ColumnString("long"));
-
-    $Parser->parseFile();
+    $parser = new Parser($dir . "/" . $fileName);
+    $parser->setTableName("city")
+        ->pushColumnHandler(new ColumnString("city"))
+        ->pushColumnHandler(new ColumnString("lat"))
+        ->pushColumnHandler(new ColumnString("long"))
+        ->parseFile();
 }
 
 function createDataFeedback($dir, $fileName) {
-    $Parser = new Parser($dir . "/" . $fileName);
-    $Parser->setTableName("feedback");
-
-    $Parser->pushColumnHandler(new ColumnString("created_at"));
-
-    $Parser->pushColumnHandler(new ColumnString("rate"));
-
     $descriptionHandler = new ColumnString("description");
     $descriptionHandler->setMaxValueLen(255);
-    $Parser->pushColumnHandler($descriptionHandler);
-
 
     $employerIdHandler = new ColumnIntRand("user_id");
     $employerIdHandler->setMaxValue(20);
-    $Parser->pushColumnHandler($employerIdHandler);
 
     $employerIdHandler = new ColumnIntRand("task_id");
     $employerIdHandler->setMaxValue(10);
-    $Parser->pushColumnHandler($employerIdHandler);
 
-    $Parser->parseFile();
+    $parser = new Parser($dir . "/" . $fileName);
+    $parser->setTableName("feedback")
+        ->pushColumnHandler(new ColumnString("created_at"))
+        ->pushColumnHandler(new ColumnString("rate"))
+        ->pushColumnHandler($descriptionHandler)
+        ->pushColumnHandler($employerIdHandler)
+        ->pushColumnHandler($employerIdHandler)
+        ->parseFile();
 }
 
 function createDataProfiles($dir, $fileName) {
-    $Parser = new Parser($dir . "/" . $fileName);
-    $Parser->setTableName("profile");
-
-    $Parser->pushColumnHandler(new ColumnString("address"));
-
-    $Parser->pushColumnHandler(new ColumnString("bd"));
-
-    $Parser->pushColumnHandler(new ColumnString("about"));
-
-    $Parser->pushColumnHandler(new ColumnString("phone"));
-
-    $Parser->pushColumnHandler(new ColumnString("skype"));
-
-    $Parser->parseFile();
+    $parser = new Parser($dir . "/" . $fileName);
+    $parser->setTableName("profile")
+        ->pushColumnHandler(new ColumnString("address"))
+        ->pushColumnHandler(new ColumnString("bd"))
+        ->pushColumnHandler(new ColumnString("about"))
+        ->pushColumnHandler(new ColumnString("phone"))
+        ->pushColumnHandler(new ColumnString("skype"))
+        ->parseFile();
 }
 
 function createDataTask($dir, $fileName) {
-    $Parser = new Parser($dir . "/" . $fileName);
-    $StatusNew = new StatusNew();
-    $Parser->setTableName("task");
-
-    $Parser->pushColumnHandler(new ColumnString("created_at"));
-
-    $Parser->pushColumnHandler(new ColumnString("category_id"));
-
     $descriptionHandler = new ColumnString("description");
     $descriptionHandler->setMaxValueLen(255);
-    $Parser->pushColumnHandler($descriptionHandler);
-
-    $Parser->pushColumnHandler(new ColumnString("expire"));
-
-    $Parser->pushColumnHandler(new ColumnString("name"));
-
-    $Parser->pushColumnHandler(new ColumnString("address"));
-
-    $Parser->pushColumnHandler(new ColumnString("budget"));
-
-    $Parser->pushColumnHandler(new ColumnString("lat"));
-
-    $Parser->pushColumnHandler(new ColumnString("long"));
 
     $updateAtHandler = new ColumnIntRand("updated_at");
-    $updateAtHandler->setMinValue(strtotime("-1 year"));
-    $updateAtHandler->setMaxValue(strtotime("now"));
-    $updateAtHandler->setModifyFunction("datetimeToStr");
-    $Parser->pushColumnHandler($updateAtHandler);
+    $updateAtHandler->setMinValue(strtotime("-1 year"))
+        ->setMaxValue(strtotime("now"))
+        ->setModifyFunction("datetimeToStr");
 
+    $StatusNew = new StatusNew();
     $statusHandler = new ColumnString("status");
     $statusHandler->setValue($StatusNew->getKey());
-    $Parser->pushColumnHandler($statusHandler);
 
     $employerIdHandler = new ColumnIntRand("employer_id");
-    $employerIdHandler->setMinValue(1);
-    $employerIdHandler->setMaxValue(10);
-    $Parser->pushColumnHandler($employerIdHandler);
+    $employerIdHandler->setMinValue(1)
+        ->setMaxValue(10);
 
     $executorIdHandler = new ColumnIntRand("executor_id");
-    $executorIdHandler->setMinValue(11);
-    $executorIdHandler->setMaxValue(21);
-    $Parser->pushColumnHandler($executorIdHandler);
+    $executorIdHandler->setMinValue(11)
+        ->setMaxValue(21);
 
     $cityIdHandler = new ColumnIntRand("city_id");
     $cityIdHandler->setMaxValue(1100);
-    $Parser->pushColumnHandler($cityIdHandler);
 
-    $Parser->parseFile();
+    $parser = new Parser($dir . "/" . $fileName);
+    $parser->setTableName("task")
+        ->pushColumnHandler(new ColumnString("created_at"))
+        ->pushColumnHandler(new ColumnString("category_id"))
+        ->pushColumnHandler($descriptionHandler)
+        ->pushColumnHandler(new ColumnString("expire"))
+        ->pushColumnHandler(new ColumnString("name"))
+        ->pushColumnHandler(new ColumnString("address"))
+        ->pushColumnHandler(new ColumnString("budget"))
+        ->pushColumnHandler(new ColumnString("lat"))
+        ->pushColumnHandler(new ColumnString("long"))
+        ->pushColumnHandler($updateAtHandler)
+        ->pushColumnHandler($statusHandler)
+        ->pushColumnHandler($employerIdHandler)
+        ->pushColumnHandler($executorIdHandler)
+        ->pushColumnHandler($cityIdHandler)
+        ->parseFile();
 }
 
 function createDataUsers($dir, $fileName) {
-    $Parser = new Parser($dir . "/" . $fileName);
-    $Parser->setTableName("user");
-
-    $Parser->pushColumnHandler(new ColumnString("email"));
-
-    $Parser->pushColumnHandler(new ColumnString("name"));
-
     $passwordHandler = new ColumnString("password");
     $passwordHandler->setModifyFunction("md5");
-    $Parser->pushColumnHandler($passwordHandler);
 
     $createdAtHandler = new ColumnIntRand("created_at");
-    $createdAtHandler->setMinValue(strtotime("-2 year"));
-    $createdAtHandler->setMaxValue(strtotime("-1 year"));
-    $createdAtHandler->setModifyFunction("datetimeToStr");
-    $Parser->pushColumnHandler($createdAtHandler);
+    $createdAtHandler->setMinValue(strtotime("-2 year"))
+        ->setMaxValue(strtotime("-1 year"))
+        ->setModifyFunction("datetimeToStr");
 
     $updateAtHandler = new ColumnIntRand("updated_at");
-    $updateAtHandler->setMinValue(strtotime("-1 year"));
-    $updateAtHandler->setMaxValue(strtotime("now"));
-    $updateAtHandler->setModifyFunction("datetimeToStr");
-    $Parser->pushColumnHandler($updateAtHandler);
+    $updateAtHandler->setMinValue(strtotime("-1 year"))
+        ->setMaxValue(strtotime("now"))
+        ->setModifyFunction("datetimeToStr");
 
     $rateHandler = new ColumnIntRand("rate");
     $rateHandler->setMaxValue(5);
-    $Parser->pushColumnHandler($rateHandler);
 
     $cityIdHandler = new ColumnIntRand("city_id");
     $cityIdHandler->setMaxValue(1100);
-    $Parser->pushColumnHandler($cityIdHandler);
 
-    $Parser->pushColumnHandler(new ColumnIntOrder("profiles_id"));
-
-    $Parser->parseFile();
+    $parser = new Parser($dir . "/" . $fileName);
+    $parser->setTableName("user")
+        ->pushColumnHandler(new ColumnString("email"))
+        ->pushColumnHandler(new ColumnString("name"))
+        ->pushColumnHandler($passwordHandler)
+        ->pushColumnHandler($createdAtHandler)
+        ->pushColumnHandler($updateAtHandler)
+        ->pushColumnHandler($rateHandler)
+        ->pushColumnHandler($cityIdHandler)
+        ->pushColumnHandler(new ColumnIntOrder("profiles_id"))
+        ->parseFile();
 }
 
 createDataCategories(__DIR__, "categories.csv");

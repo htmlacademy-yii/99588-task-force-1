@@ -12,9 +12,10 @@ abstract class Column {
     public function getKey() :string {
         return $this->key;
     }
-    public function setModifyFunction(callable $function) :void
+    public function setModifyFunction(callable $function) :Column
     {
         $this->modifyFunction = $function;
+        return $this;
     }
     public abstract function getValue() :string;
 }
