@@ -15,7 +15,6 @@ use TaskForce\app\status\StatusNew;
 use TaskForce\app\status\StatusProcess;
 use TaskForce\app\exception\BaseException;
 
-
 class Task
 {
     private int $userId;
