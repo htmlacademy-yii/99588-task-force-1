@@ -115,3 +115,4 @@ CREATE TABLE `massage` (
     FOREIGN KEY (sender_id)  REFERENCES `user` (id),
     FOREIGN KEY (recipient_id)  REFERENCES `user` (id)
 );
+
