@@ -15,7 +15,5 @@ class m211003_212454_rename_user_profiles_to_profile extends Migration
     public function down()
     {
         $this->renameColumn('{{%user}}', 'profile_id', 'profiles_id');
-        echo "m211003_152943_rename_user_profiles_to_profile cannot be reverted.\n";
-        return false;
     }
 }

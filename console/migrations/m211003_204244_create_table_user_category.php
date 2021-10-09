@@ -69,7 +69,5 @@ class m211003_204244_create_table_user_category extends Migration
         );
 
         $this->dropTable('user_category');
-        echo "m211003_204244_create_table_user_category cannot be reverted.\n";
-        return false;
     }
 }

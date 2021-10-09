@@ -15,7 +15,5 @@ class m211006_153542_add_column_user_visit_at extends Migration
     public function down()
     {
         $this->dropColumn('user', 'visit_at');
-        echo "m211006_153542_add_column_user_visit_at cannot be reverted.\n";
-        return false;
     }
 }
