@@ -11,7 +11,7 @@ class TaskController extends Controller
     {
         $tasks = Task::find()->all();
         return $this->render('index', [
-            "tasks" => $tasks
+            'tasks' => $tasks
         ]);
     }
 }
