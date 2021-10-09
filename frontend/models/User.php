@@ -129,12 +129,12 @@ class User extends \yii\db\ActiveRecord
 
     public function getExecutorTasksCount() :int
     {
-        return Task::find()->where(['executor_id' => $this->id])->count();
+        return $this->getExecutorTasks()->count();
     }
 
     public function getFeedBacksCount() :int
     {
-        return Feedback::find()->where(['user_id' => $this->id])->count();
+        return $this->getFeedBacks()->count();
     }
 
     public function getCategories() :ActiveQuery
