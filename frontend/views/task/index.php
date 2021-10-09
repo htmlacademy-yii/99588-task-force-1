@@ -10,7 +10,7 @@ $this->title = 'tasks';
                     <a href="#" class="link-regular"><h2><?= $task->name; ?></h2></a>
                     <a  class="new-task__type link-regular" href="#"><p><?= $task->category->name; ?></p></a>
                 </div>
-                <div class="new-task__icon new-task__icon--translation"></div>
+                <div class="new-task__icon new-task__icon--<?= $task->category->icon?>"></div>
                 <p class="new-task_description"><?= $task->description; ?></p>
                 <b class="new-task__price new-task__price--translation"><?= $task->budget; ?><b> ₽</b></b>
                 <p class="new-task__place"><?= $task->city->city; ?>, <?= $task->address; ?></p>

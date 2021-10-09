@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "category".
@@ -16,28 +17,19 @@ use Yii;
  */
 class Category extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function tableName() :string
     {
         return 'category';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules() :array
     {
         return [
             [['name', 'icon'], 'string', 'max' => 64],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return [
             'id' => 'ID',
@@ -46,22 +38,12 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Tasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTasks()
+    public function getTasks() :ActiveQuery
     {
         return $this->hasMany(Task::className(), ['category_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[UserCategories]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserCategories()
+    public function getUserCategories() :ActiveQuery
     {
         return $this->hasMany(UserCategory::className(), ['category_id' => 'id']);
     }

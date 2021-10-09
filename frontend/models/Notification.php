@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "notification".
@@ -16,18 +17,12 @@ use Yii;
  */
 class Notification extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function tableName() :string
     {
         return 'notification';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules() :array
     {
         return [
             [['user_id'], 'integer'],
@@ -37,10 +32,7 @@ class Notification extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return [
             'id' => 'ID',
@@ -50,12 +42,7 @@ class Notification extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser() :ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
