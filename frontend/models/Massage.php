@@ -1,34 +1,17 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "massage".
- *
- * @property int $id
- * @property string|null $text
- * @property int|null $sender_id
- * @property int|null $recipient_id
- *
- * @property User $recipient
- * @property User $sender
- */
 class Massage extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'massage';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['sender_id', 'recipient_id'], 'integer'],
@@ -38,10 +21,7 @@ class Massage extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -51,22 +31,12 @@ class Massage extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Recipient]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRecipient()
+    public function getRecipient(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'recipient_id']);
     }
 
-    /**
-     * Gets query for [[Sender]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSender()
+    public function getSender(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'sender_id']);
     }

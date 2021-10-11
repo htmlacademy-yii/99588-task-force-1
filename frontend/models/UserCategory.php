@@ -4,20 +4,20 @@ namespace frontend\models;
 
 use yii\db\ActiveQuery;
 
-class File extends \yii\db\ActiveRecord
+class UserCategory extends \yii\db\ActiveRecord
 {
     public static function tableName(): string
     {
-        return 'file';
+        return 'user_category';
     }
 
     public function rules(): array
     {
         return [
-            [['user_id', 'task_id'], 'integer'],
-            [['name'], 'string', 'max' => 128],
+            [['user_id', 'category_id'], 'required'],
+            [['user_id', 'category_id'], 'integer'],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -25,15 +25,14 @@ class File extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
             'user_id' => 'User ID',
-            'task_id' => 'Task ID',
+            'category_id' => 'Category ID',
         ];
     }
 
-    public function getTask(): ActiveQuery
+    public function getCategory(): ActiveQuery
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
     public function getUser(): ActiveQuery

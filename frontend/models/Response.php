@@ -1,37 +1,17 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "response".
- *
- * @property int $id
- * @property string|null $created_at
- * @property int|null $rate
- * @property string|null $description
- * @property int|null $budget
- * @property int|null $user_id
- * @property int|null $task_id
- *
- * @property Task $task
- * @property User $user
- */
 class Response extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'response';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['created_at'], 'safe'],
@@ -42,10 +22,7 @@ class Response extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -58,22 +35,12 @@ class Response extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Task]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTask()
+    public function getTask(): ActiveQuery
     {
         return $this->hasOne(Task::className(), ['id' => 'task_id']);
     }
 
-    /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }

@@ -1,62 +1,29 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "user".
- *
- * @property int $id
- * @property string|null $email
- * @property string|null $name
- * @property string|null $password
- * @property string|null $created_at
- * @property string|null $updated_at
- * @property int|null $rate
- * @property int|null $city_id
- * @property int|null $profiles_id
- *
- * @property AvailableNotificationType[] $availableNotificationTypes
- * @property City $city
- * @property Feedback[] $feedbacks
- * @property File[] $files
- * @property Massage[] $massages
- * @property Massage[] $massages0
- * @property Profile $profiles
- * @property Response[] $responses
- * @property Task[] $tasks
- * @property Task[] $tasks0
- */
 class User extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'user';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['created_at', 'updated_at'], 'safe'],
-            [['rate', 'city_id', 'profiles_id'], 'integer'],
+            [['created_at', 'updated_at', 'visit_at'], 'safe'],
+            [['rate', 'city_id', 'profile_id'], 'integer'],
             [['email', 'name'], 'string', 'max' => 64],
             [['password'], 'string', 'max' => 255],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
-            [['profiles_id'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['profiles_id' => 'id']],
+            [['profile_id'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['profile_id' => 'id']],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -67,107 +34,83 @@ class User extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'rate' => 'Rate',
             'city_id' => 'City ID',
-            'profiles_id' => 'Profiles ID',
+            'profile_id' => 'Profile ID',
+            'visit_at' => 'Visit At',
         ];
     }
 
-    /**
-     * Gets query for [[AvailableNotificationTypes]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAvailableNotificationTypes()
+    public function getAvailableNotificationTypes(): ActiveQuery
     {
         return $this->hasMany(AvailableNotificationType::className(), ['user_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[City]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCity()
+    public function getCity(): ActiveQuery
     {
         return $this->hasOne(City::className(), ['id' => 'city_id']);
     }
 
-    /**
-     * Gets query for [[Feedbacks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFeedbacks()
+    public function getFeedbacks(): ActiveQuery
     {
         return $this->hasMany(Feedback::className(), ['user_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Files]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFiles()
+    public function getFiles(): ActiveQuery
     {
         return $this->hasMany(File::className(), ['user_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Massages]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMassages()
+    public function getMassages(): ActiveQuery
     {
         return $this->hasMany(Massage::className(), ['sender_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Massages0]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMassages0()
+    public function getMassages0(): ActiveQuery
     {
         return $this->hasMany(Massage::className(), ['recipient_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Profiles]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfiles()
+    public function getNotifications(): ActiveQuery
     {
-        return $this->hasOne(Profile::className(), ['id' => 'profiles_id']);
+        return $this->hasMany(Notification::className(), ['user_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Responses]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getResponses()
+    public function getProfile(): ActiveQuery
+    {
+        return $this->hasOne(Profile::className(), ['id' => 'profile_id']);
+    }
+
+    public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Response::className(), ['user_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Tasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEmployer()
+    public function getEmployerTasks(): ActiveQuery
     {
         return $this->hasMany(Task::className(), ['employer_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Tasks0]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExecutor()
+    public function getExecutorTasks(): ActiveQuery
     {
         return $this->hasMany(Task::className(), ['executor_id' => 'id']);
+    }
+
+    public function getUserCategories(): ActiveQuery
+    {
+        return $this->hasMany(UserCategory::className(), ['user_id' => 'id']);
+    }
+
+    public function getExecutorTasksCount(): int
+    {
+        return $this->getExecutorTasks()->count();
+    }
+
+    public function getFeedBacksCount(): int
+    {
+        return $this->getFeedBacks()->count();
+    }
+
+    public function getCategories(): ActiveQuery
+    {
+        return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable('user_category', ['user_id' => 'id']);
     }
 }
