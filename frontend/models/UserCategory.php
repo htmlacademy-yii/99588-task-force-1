@@ -2,27 +2,16 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "user_category".
- *
- * @property int $id
- * @property int $user_id
- * @property int $category_id
- *
- * @property Category $category
- * @property User $user
- */
 class UserCategory extends \yii\db\ActiveRecord
 {
-    public static function tableName() :string
+    public static function tableName(): string
     {
         return 'user_category';
     }
 
-    public function rules() :array
+    public function rules(): array
     {
         return [
             [['user_id', 'category_id'], 'required'],
@@ -32,7 +21,7 @@ class UserCategory extends \yii\db\ActiveRecord
         ];
     }
 
-    public function attributeLabels() :array
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -41,12 +30,12 @@ class UserCategory extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getCategory() :ActiveQuery
+    public function getCategory(): ActiveQuery
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
-    public function getUser() :ActiveQuery
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }

@@ -2,44 +2,16 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "task".
- *
- * @property int $id
- * @property string|null $created_at
- * @property string|null $updated_at
- * @property int|null $category_id
- * @property string|null $description
- * @property string|null $expire
- * @property string|null $name
- * @property string|null $address
- * @property int|null $budget
- * @property float|null $lat
- * @property float|null $long
- * @property string|null $status
- * @property int|null $employer_id
- * @property int|null $executor_id
- * @property int|null $city_id
- *
- * @property Category $category
- * @property City $city
- * @property User $employer
- * @property User $executor
- * @property Feedback[] $feedbacks
- * @property File[] $files
- * @property Response[] $responses
- */
 class Task extends \yii\db\ActiveRecord
 {
-    public static function tableName() :string
+    public static function tableName(): string
     {
         return 'task';
     }
 
-    public function rules() :array
+    public function rules(): array
     {
         return [
             [['created_at', 'updated_at', 'expire'], 'safe'],
@@ -55,7 +27,7 @@ class Task extends \yii\db\ActiveRecord
         ];
     }
 
-    public function attributeLabels() :array
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -76,37 +48,37 @@ class Task extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getCategory() :ActiveQuery
+    public function getCategory(): ActiveQuery
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
-    public function getCity() :ActiveQuery
+    public function getCity(): ActiveQuery
     {
         return $this->hasOne(City::className(), ['id' => 'city_id']);
     }
 
-    public function getEmployer() :ActiveQuery
+    public function getEmployer(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'employer_id']);
     }
 
-    public function getExecutor() :ActiveQuery
+    public function getExecutor(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'executor_id']);
     }
 
-    public function getFeedbacks() :ActiveQuery
+    public function getFeedbacks(): ActiveQuery
     {
         return $this->hasMany(Feedback::className(), ['task_id' => 'id']);
     }
 
-    public function getFiles() :ActiveQuery
+    public function getFiles(): ActiveQuery
     {
         return $this->hasMany(File::className(), ['task_id' => 'id']);
     }
 
-    public function getResponses() :ActiveQuery
+    public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Response::className(), ['task_id' => 'id']);
     }

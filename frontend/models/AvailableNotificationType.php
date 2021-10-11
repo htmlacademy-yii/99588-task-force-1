@@ -2,26 +2,16 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "available_notification_type".
- *
- * @property int $id
- * @property int|null $user_id
- * @property string|null $notification_type
- *
- * @property User $user
- */
 class AvailableNotificationType extends \yii\db\ActiveRecord
 {
-    public static function tableName() :string
+    public static function tableName(): string
     {
         return 'available_notification_type';
     }
 
-    public function rules() :array
+    public function rules(): array
     {
         return [
             [['user_id'], 'integer'],
@@ -30,7 +20,7 @@ class AvailableNotificationType extends \yii\db\ActiveRecord
         ];
     }
 
-    public function attributeLabels() :array
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -39,7 +29,7 @@ class AvailableNotificationType extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getUser() :ActiveQuery
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }

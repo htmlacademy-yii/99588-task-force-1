@@ -2,28 +2,16 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "file".
- *
- * @property int $id
- * @property string|null $name
- * @property int|null $user_id
- * @property int|null $task_id
- *
- * @property Task $task
- * @property User $user
- */
 class File extends \yii\db\ActiveRecord
 {
-    public static function tableName() :string
+    public static function tableName(): string
     {
         return 'file';
     }
 
-    public function rules() :array
+    public function rules(): array
     {
         return [
             [['user_id', 'task_id'], 'integer'],
@@ -33,7 +21,7 @@ class File extends \yii\db\ActiveRecord
         ];
     }
 
-    public function attributeLabels() :array
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -43,12 +31,12 @@ class File extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getTask() :ActiveQuery
+    public function getTask(): ActiveQuery
     {
         return $this->hasOne(Task::className(), ['id' => 'task_id']);
     }
 
-    public function getUser() :ActiveQuery
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }

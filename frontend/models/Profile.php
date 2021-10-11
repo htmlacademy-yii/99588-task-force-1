@@ -2,29 +2,16 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "profile".
- *
- * @property int $id
- * @property string|null $address
- * @property string|null $bd
- * @property string|null $about
- * @property string|null $phone
- * @property string|null $skype
- *
- * @property User[] $users
- */
 class Profile extends \yii\db\ActiveRecord
 {
-    public static function tableName() :string
+    public static function tableName(): string
     {
         return 'profile';
     }
 
-    public function rules() :array
+    public function rules(): array
     {
         return [
             [['bd'], 'safe'],
@@ -34,7 +21,7 @@ class Profile extends \yii\db\ActiveRecord
         ];
     }
 
-    public function attributeLabels() :array
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',

@@ -2,34 +2,23 @@
 
 namespace frontend\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
-/**
- * This is the model class for table "category".
- *
- * @property int $id
- * @property string|null $name
- * @property string|null $icon
- *
- * @property Task[] $tasks
- * @property UserCategory[] $userCategories
- */
 class Category extends \yii\db\ActiveRecord
 {
-    public static function tableName() :string
+    public static function tableName(): string
     {
         return 'category';
     }
 
-    public function rules() :array
+    public function rules(): array
     {
         return [
             [['name', 'icon'], 'string', 'max' => 64],
         ];
     }
 
-    public function attributeLabels() :array
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -38,12 +27,12 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getTasks() :ActiveQuery
+    public function getTasks(): ActiveQuery
     {
         return $this->hasMany(Task::className(), ['category_id' => 'id']);
     }
 
-    public function getUserCategories() :ActiveQuery
+    public function getUserCategories(): ActiveQuery
     {
         return $this->hasMany(UserCategory::className(), ['category_id' => 'id']);
     }
